@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>NUST Mess Menu</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+
+<style>
+
+body{
+margin:0;
+font-family:Segoe UI;
+background:#eef2f7;
+}
+
+.header{
+background:white;
+padding:15px 30px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+box-shadow:0px 3px 12px rgba(0,0,0,0.15);
+}
+
+.left{
+display:flex;
+align-items:center;
+gap:15px;
+}
+
+.title{
+font-size:28px;
+font-weight:bold;
+}
+
+.nav button{
+padding:10px 20px;
+margin-left:10px;
+border:none;
+border-radius:8px;
+cursor:pointer;
+background:#90EE90;
+font-weight:bold;
+}
+
+.nav button:hover{
+background:#77dd77;
+}
+
+/* Welcome line */
+.welcome{
+background:white;
+color:#001f5c;
+text-align:center;
+font-weight:700;
+font-size:28px;
+padding:18px;
+font-family: 'Playfair Display', serif;
+opacity:0;
+transform:translateY(-20px);
+animation:welcomeAnim 1s ease forwards;
+}
+
+@keyframes welcomeAnim{
+to{
+opacity:1;
+transform:translateY(0);
+}
+}
+
+.container{
+width:75%;
+margin:auto;
+margin-top:40px;
+opacity:0;
+transform:translateY(20px);
+transition:all 0.8s ease;
+}
+
+.container.show{
+opacity:1;
+transform:translateY(0);
+}
+
+.day-wrapper{
+display:flex;
+justify-content:center;
+margin-bottom:30px;
+}
+
+.day-box{
+border:3px solid #001f5c;
+padding:15px 35px;
+border-radius:10px;
+}
+
+.day{
+font-size:44px;
+font-weight:900;
+font-family:Calibri, sans-serif;
+color:#001f5c;
+}
+
+.card{
+background:white;
+padding:25px;
+margin-bottom:20px;
+border-radius:15px;
+box-shadow:0px 6px 18px rgba(0,0,0,0.12);
+}
+
+.card-title{
+font-size:24px;
+color:#27ae60;
+font-weight:bold;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+background:white;
+box-shadow:0px 6px 18px rgba(0,0,0,0.12);
+}
+
+th,td{
+padding:15px;
+border:1px solid #ddd;
+text-align:center;
+}
+
+th{
+background:#001f5c;
+color:white;
+}
+
+.day-name{
+font-weight:700;
+}
+
+/* 🎉 Upward burst emojis */
+.emoji{
+position:fixed;
+bottom:0;
+font-size:20px;
+z-index:9999;
+animation:burstUp 1s ease-out forwards;
+opacity:1;
+pointer-events:none;
+}
+
+@keyframes burstUp{
+0%{
+transform:translateY(0) scale(0.6);
+opacity:1;
+}
+100%{
+transform:translateY(-300px) scale(1.4);
+opacity:0;
+}
+}
+
+</style>
+
+</head>
+
+<body>
+
+
+<div class="header">
+
+<div class="left">
+<img src="https://cdn-icons-png.flaticon.com/512/1046/1046857.png" height="45">
+<div class="title">NUST Mess Menu</div>
+</div>
+
+<div class="nav">
+<button onclick="showToday()">Today</button>
+<button onclick="showWeek()">This Week</button>
+</div>
+
+</div>
+
+
+<div class="welcome">
+An Elite Welcome To Saad Yousaf's Website ! ❤️
+</div>
+
+<div class="container" id="content"></div>
+
+
+<script>
+
+function isWeekA(){
+let weekNumber = Math.floor(new Date().getDate() / 7);
+return weekNumber % 2 === 0;
+}
+
+const menu = {
+
+Monday:{
+breakfast:"Half/Full Fried Egg, Paratha, Tea",
+lunch:"Red Beans, Pickle, Chapati",
+dinner:"Chicken Manchurian, Fried Rice"
+},
+
+Tuesday:{
+breakfast:"Omelette, Paratha, Tea",
+lunch:"Daal Mash, Salad, Chapati",
+dinnerA:"Chicken Achari, Chapati, Kheer",
+dinnerB:"Chicken Achari, Chapati, Zarda"
+},
+
+Wednesday:{
+breakfast:"Kulcha, Channa, Tea",
+lunchA:"White Rice, Pakora Kari, Pickle",
+lunchB:"Naan, Pakora Kari, Pickle",
+dinner:"Chicken Roast, Daal Channa, Green Chatni, Chapati"
+},
+
+Thursday:{
+breakfast:"Scrambled Egg, Paratha, Tea",
+lunch:"Mix Vegetable, Pickle, Chapati",
+dinner:"Chicken Biryani, Raita, Cold Drinks"
+},
+
+Friday:{
+breakfast:"French Toast, Tea",
+lunchA:"White Rice, Daal Mong, Pickle",
+lunchB:"White Rice, Daal Masoor, Pickle",
+dinner:"Beef Chapli Kabab, Aloo Bhujia, Chatni, Chapati"
+},
+
+Saturday:{
+breakfast:"Aloo Paratha, Yogurt, Tea",
+lunch:"Beef Curry, Pickle, Chapati",
+dinner:"Chicken Pulao, Raita"
+},
+
+Sunday:{
+breakfast:"Halwa Puri, Channa, Tea",
+lunch:"Mix Vegetable, Pickle, Chapati",
+dinner:"Chicken Karahi, Chapati"
+}
+
+};
+
+function animateContent(html){
+let container = document.getElementById("content");
+container.classList.remove("show");
+
+setTimeout(()=>{
+container.innerHTML = html;
+container.classList.add("show");
+},200);
+}
+
+function showToday(){
+
+let today=new Date().toLocaleDateString('en-US',{weekday:'long'});
+let data=menu[today];
+
+let weekA = isWeekA();
+
+let lunch = data.lunchA ? (weekA ? data.lunchA : data.lunchB) : data.lunch;
+let dinner = data.dinnerA ? (weekA ? data.dinnerA : data.dinnerB) : data.dinner;
+
+let html = `
+
+<div class="day-wrapper">
+<div class="day-box">
+<div class="day">${today}</div>
+</div>
+</div>
+
+<div class="card">
+<div class="card-title">Breakfast</div>
+${data.breakfast}
+</div>
+
+<div class="card">
+<div class="card-title">Lunch</div>
+${lunch}
+</div>
+
+<div class="card">
+<div class="card-title">Dinner</div>
+${dinner}
+</div>
+`;
+
+animateContent(html);
+}
+
+function showWeek(){
+
+let weekA = isWeekA();
+
+let html=
+`<table>
+<tr>
+<th>Day</th>
+<th>Breakfast</th>
+<th>Lunch</th>
+<th>Dinner</th>
+</tr>`;
+
+for(let day in menu){
+
+let d = menu[day];
+
+let lunch = d.lunchA ? (weekA ? d.lunchA : d.lunchB) : d.lunch;
+let dinner = d.dinnerA ? (weekA ? d.dinnerA : d.dinnerB) : d.dinner;
+
+html+=`
+<tr>
+<td class="day-name">${day}</td>
+<td>${d.breakfast}</td>
+<td>${lunch}</td>
+<td>${dinner}</td>
+</tr>`;
+}
+
+html+=`</table>`;
+
+animateContent(html);
+}
+
+/* 🎉 Upward emoji burst */
+function createEmojiBurst(){
+const emojis = ["🎉","✨","🥳","🎊","🎈"];
+
+for(let i=0;i<50;i++){
+let e = document.createElement("div");
+e.classList.add("emoji");
+
+e.innerText = emojis[Math.floor(Math.random()*emojis.length)];
+e.style.left = Math.random()*100 + "vw";
+e.style.animationDuration = (0.8 + Math.random()*0.4) + "s";
+
+document.body.appendChild(e);
+
+setTimeout(()=>e.remove(),1200);
+}
+}
+
+/* Run on load */
+showToday();
+createEmojiBurst();
+
+</script>
+
+</body>
+</html>
